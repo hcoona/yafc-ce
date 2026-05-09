@@ -16,6 +16,10 @@ public class ProductionTableView : ProjectPageView<ProductionTable> {
 
     public override void SetModel(ProjectPage? page) {
         _focusManager.Clear();
+        if (page == null) {
+            flatHierarchyBuilder.Clear();
+        }
+
         base.SetModel(page);
     }
 
@@ -1281,7 +1285,13 @@ goodsHaveNoProduction:;
     }
 
     public override void Rebuild(bool visualOnly = false) {
-        flatHierarchyBuilder.SetData(model);
+        if (model == null) {
+            flatHierarchyBuilder.Clear();
+        }
+        else {
+            flatHierarchyBuilder.SetData(model);
+        }
+
         base.Rebuild(visualOnly);
     }
 

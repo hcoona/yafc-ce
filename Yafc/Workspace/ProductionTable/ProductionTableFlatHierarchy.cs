@@ -33,6 +33,20 @@ public class FlatHierarchy<TRow, TGroup>(DataGrid<TRow> grid, Action<ImGui, TGro
     private bool rebuildRequired;
 
     public float width => grid.width;
+
+    public void Clear() {
+        flatRecipes.Clear();
+        flatGroups.Clear();
+        rowHighlighting.Clear();
+        depthStart.Clear();
+        draggingRecipe = null;
+        root = null!;
+        rebuildRequired = false;
+        nextRowIsHighlighted = false;
+        nextRowBackgroundColor = SchemeColor.None;
+        nextRowTextColor = SchemeColor.None;
+    }
+
     public void SetData(TGroup table) {
         root = table;
         rebuildRequired = true;

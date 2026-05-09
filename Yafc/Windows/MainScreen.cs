@@ -71,6 +71,7 @@ public partial class MainScreen : WindowMain, IKeyboardFocus, IProgress<(string,
     [MemberNotNull(nameof(project))]
     private void SetProject(Project project) {
         if (this.project != null) {
+            SetSecondaryPage(null);
             this.project.metaInfoChanged -= ProjectOnMetaInfoChanged;
             this.project.saveStateChanged -= ProjectSaveStateChanged;
             this.project.settings.changed -= ProjectSettingsChanged;
