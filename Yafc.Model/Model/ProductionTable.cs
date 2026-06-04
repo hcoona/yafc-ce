@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using Google.OrTools.LinearSolver;
 using Serilog;
 using Yafc.I18n;
-using Yafc.UI;
 
 namespace Yafc.Model;
 
@@ -20,7 +19,7 @@ public struct ProductionTableFlow(IObjectWithQuality<Goods> goods, float amount,
 
 [DeserializeWithNonPublicConstructor]
 public sealed partial class ProductionTable : ProjectPageContents, IComparer<ProductionTableFlow>, IElementGroup<RecipeRow> {
-    private static readonly ILogger logger = Logging.GetLogger<ProductionTable>();
+    private static readonly ILogger logger = Yafc.UI.Logging.GetLogger<ProductionTable>();
     private readonly ProductionTable rootTable;
     [SkipSerialization] public Dictionary<IObjectWithQuality<Goods>, IProductionLink> linkMap { get; } = [];
     List<RecipeRow> IElementGroup<RecipeRow>.elements => recipes;
@@ -540,7 +539,7 @@ match:
             }
         }
 
-        await Ui.ExitMainThread();
+        await page.owner.modelThreadSwitcher.SwitchToBackground();
 
         for (int i = 0; i < allRecipes.Count; i++) {
             objective.SetCoefficient(vars[i], allRecipes[i].BaseCost);
@@ -577,7 +576,7 @@ match:
             result = productionTableSolver.Solve();
 
             logger.Information("Solver finished with result {result}", result);
-            await Ui.EnterMainThread();
+            await page.owner.modelThreadSwitcher.SwitchToForeground();
 
             if (result is Solver.ResultStatus.OPTIMAL or Solver.ResultStatus.FEASIBLE) {
                 List<IProductionLink> linkList = [];
